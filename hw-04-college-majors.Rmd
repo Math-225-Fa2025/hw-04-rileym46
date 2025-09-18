@@ -98,7 +98,7 @@ In order to answer this question all we need to do is sort the data.
 We use the `arrange` function to do this, and sort it by the `unemployment_rate` variable.
 By default `arrange` sorts in ascending order, which is what we want here -- we're interested in the major with the *lowest* unemployment rate.
 
-```{r lowest-unemp}
+```{r lowest-unemp, eval = TRUE}
 college_recent_grads %>%
   arrange(unemployment_rate)
 ```
@@ -114,7 +114,7 @@ Note how easily we expanded our code with adding another step to our pipeline,
 with the pipe operator: `%>%`.
 ```
 
-```{r lowest-unemp-select}
+```{r lowest-unemp-select, eval = TRUE}
 college_recent_grads %>%
   arrange(unemployment_rate) %>%
   select(rank, major, unemployment_rate)
@@ -125,7 +125,7 @@ Not really!
 
 We can use the `percent()` function to clean up the display a bit.
 
-```{r}
+```{r percent, eval = TRUE}
 college_recent_grads %>%
   arrange(unemployment_rate) %>%
   select(rank, major, unemployment_rate) %>%
@@ -141,10 +141,12 @@ For example, if earlier we were interested in the major with the highest unemplo
 The `desc` function specifies that we want `unemployment_rate` in descending order.
 ```
 
-```{r}
+```{r women, eval = TRUE}
 college_recent_grads %>%
-  arrange(desc(unemployment_rate)) %>%
-  select(rank, major, unemployment_rate)
+  arrange(desc(women)) %>%
+  select(rank, major, total, women) %>%
+  mutate(women = percent(women)) %>%
+  top_n(3)
 ```
 
 1.  Using what you've learned so far, arrange the data in descending order with respect to proportion of women in a major, and display only the major, the total number of people with major, and proportion of women. Show only the top 3 majors by adding `top_n(3)` at the end of the pipeline.
@@ -160,6 +162,8 @@ These correspond to the 25th, 50th, and 75th percentiles of the income distribut
 
 2.  Why do we often choose the median, rather than the mean, to describe the typical income of a group of people?
 
+`The median is the middle value, so you can expect a more common outcome. It's less likely to take extreme outliers into account.`
+
 The question we want to answer "How do the distributions of median income compare across major categories?".
 We need to do a few things to answer this question: First, we need to group the data by `major_category`.
 Then, we need a way to summarize the distributions of median income within these groups.
@@ -171,7 +175,7 @@ The first argument is the data frame, and the next argument gives the mapping of
 
 Let's start simple and take a look at the distribution of all median incomes, without considering the major categories.
 
-```{r fig,height=2}
+```{r fig,height=2, eval = TRUE}
 ggplot(data = college_recent_grads, mapping = aes(x = median)) +
   geom_histogram()
 ```
