@@ -76,7 +76,7 @@ You can also find this information [here](https://fivethirtyeight-r.netlify.app/
 
 You can also take a quick peek at your data frame and view its dimensions with the `glimpse` function.
 
-```{r glimpse}
+```{r glimpse, eval = TRUE}
 glimpse(college_recent_grads)
 ```
 
@@ -177,7 +177,7 @@ Let's start simple and take a look at the distribution of all median incomes, wi
 
 ```{r fig,height=2, eval = TRUE}
 ggplot(data = college_recent_grads, mapping = aes(x = median)) +
-  geom_histogram()
+  geom_histogram(binwidth = 30)
 ```
 
 Along with the plot, we get a message:
@@ -190,9 +190,14 @@ You might ask yourself: "What would be a meaningful difference in median incomes
 
 3.  Try binwidths of \$1000 and \$5000 and choose one. Explain your reasoning for your choice. Note that the binwidth is an argument for the `geom_histogram` function. So to specify a binwidth of \$1000, you would use `geom_histogram(binwidth = 1000)`.
 
+```{r binwidth, eval = TRUE}
+ggplot(data = college_recent_grads, mapping = aes(x = median)) +
+  geom_histogram(binwidth = 3000)
+```
+
 We can also calculate summary statistics for this distribution using the `summarise` function:
 
-```{r}
+```{r summarise, eval = TRUE}
 college_recent_grads %>%
   summarise(min = min(median), max = max(median),
             mean = mean(median), med = median(median),
@@ -204,25 +209,34 @@ college_recent_grads %>%
 4.  Based on the shape of the histogram you created in the previous exercise, determine which of these summary statistics is useful for describing the distribution.
     Write up your description (remember shape, center, spread, any unusual observations) and include the summary statistic output as well.
 
+`The histogram has a right skew. A majority of the data is located to the left of the graph. We can see that the mean and the median are a lot closer to the minimum than the maximum, suggesting that the data is clustered on the lower end of the distribution. There is also a clear outlier at the maximum, which can explain why the range is so large.`
+
 5.  Plot the distribution of `median` income using a histogram, faceted by `major_category`.
     Use the `binwidth` you chose in the earlier exercise.
+
+```{r major-category, eval = TRUE}
+ggplot(data = college_recent_grads, mapping = aes(x = median)) +
+  geom_histogram(binwidth = 3000) +
+  facet_wrap( ~ major_category)
+```
 
 Now that we've seen the shapes of the distributions of median incomes for each major category, we should have a better idea for which summary statistic to use to quantify the typical median income.
 
 6.  Which major category has the highest typical (you'll need to decide what this means) median income? Use the partial code below, filling it in with the appropriate statistic and function. Also note that we are looking for the highest statistic, so make sure to arrange in the correct direction.
 
-```{r eval=FALSE}
+```{r typical-median, eval=TRUE}
 college_recent_grads %>%
   group_by(major_category) %>%
-  summarise(___ = ___(median)) %>%
-  arrange(___)
+  summarise(typical_median =  median(median)) %>%
+  arrange(desc(typical_median))
 ```
 
 7.  Which major category is the least popular in this sample? To answer this question we use a new function called `count`, which first groups the data and then counts the number of observations in each category (see below). Add to the pipeline appropriately to arrange the results so that the major with the lowest observations is on top.
 
-```{r}
+```{r pop-count, eval = TRUE}
 college_recent_grads %>%
-  count(major_category)
+  count(major_category) %>%
+  arrange(n)
 ```
 
 🧶 ✅ ⬆️ Knit, *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards.*
